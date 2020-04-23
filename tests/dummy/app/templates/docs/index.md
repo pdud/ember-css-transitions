@@ -19,7 +19,7 @@ The kind of CSS you'll be writing is of the following structure:
   opacity: 0;
 }
 
-.example-enter.example-enter-active {
+.example.example-enter-active {
   /* enter final state and how to transition to it */
   opacity: 1;
   transition: opacity 0.5s ease-in;

@@ -1,24 +1,46 @@
 /* BEGIN-SNIPPET insert-destroy.css */
 .example-enter {
   opacity: 0;
-  height: 0px;
+  max-height: 0px;
 }
 
-.example-enter.example-enter-active {
+.example-enter-active {
   opacity: 1;
-  height: 50px;
+  max-height: 50px;
   transition: all 0.5s ease-in;
 }
 
 .example-leave {
   opacity: 1;
-  height: 50px;
+  max-height: 50px;
 }
 
-.example-leave.example-leave-active {
+.example-leave-active {
   opacity: 0;
-  height: 0;
+  max-height: 0px;
   transition: all 0.5s ease-in;
+}
+/* END-SNIPPET */
+
+/* BEGIN-SNIPPET insert-destroy-verbose.css */
+.duration-1000 {
+  transition-duration: 1000ms;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-100 {
+  opacity: 100;
+}
+
+.max-h-12	{
+  max-height: 3rem;
+}
+
+.max-h-0	{
+  max-height: 0;
 }
 /* END-SNIPPET */
 
@@ -28,13 +50,41 @@
 }
 
 .is-important,
-.is-important-add.is-important-add-active {
+.is-important-add-active {
   color: red;
   font-size: 1.5em;
+  transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
 }
 
-.is-important-remove.is-important-remove-active {
+.is-important-remove-active {
   font-size: 1.0em;
   color: black;
+  transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+/* END-SNIPPET */
+
+/* BEGIN-SNIPPET class-add-removal-verbose.css*/
+.duration-1000 {
+  transition-duration: 1000ms;
+}
+
+.duration-200	{
+  transition-duration: 200ms
+}
+
+.text-red-600	{
+  color: #e53e3e;
+}
+
+.text-black	{
+  color: #000000;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
 }
 /* END-SNIPPET */
