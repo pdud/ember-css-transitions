@@ -33,6 +33,9 @@ export default class CssTransitionModifier extends Modifier {
   }
 
   async didInstall() {
+    this.parentElement = this.element.parentElement;
+    this.nextElementSibling = this.element.nextElementSibling;
+
     this.applyClasses();
 
     let transitionClass = this.transitionClass;
@@ -49,9 +52,6 @@ export default class CssTransitionModifier extends Modifier {
         this.args.named.didTransitionIn();
       }
     }
-
-    this.parentElement = this.element.parentElement;
-    this.nextElementSibling = this.element.nextElementSibling;
   }
 
   async willRemove() {
@@ -70,8 +70,6 @@ export default class CssTransitionModifier extends Modifier {
       if (this.args.named.didTransitionOut) {
         this.args.named.didTransitionOut();
       }
-
-      this.clone = null;
     }
   }
 
@@ -129,15 +127,19 @@ export default class CssTransitionModifier extends Modifier {
 
     clone.setAttribute('id', `${original.id}_clone`);
 
-    parentElement.insertBefore(clone, nextElementSibling);
-
-    this.clone = clone;
+    if (!nextElementSibling || !nextElementSibling.getAttribute('id').includes('_clone')) {
+      parentElement.insertBefore(clone, nextElementSibling);
+      this.clone = clone;
+    } else {
+      this.removeClone();
+    }
   }
 
   removeClone() {
-    if (this.clone.isConnected && this.clone.parentNode !== null) {
+    if (this.clone && this.clone.isConnected && this.clone.parentNode !== null) {
       this.clone.parentNode.removeChild(this.clone);
     }
+    this.clone = null;
   }
 
   /**
@@ -155,6 +157,10 @@ export default class CssTransitionModifier extends Modifier {
     let className = `${transitionClass}-${animationType}`;
     let activeClassName = `${className}-active`;
 
+    if (!element) {
+      return;
+    }
+
     // add first class right away
     this.addClass(className);
 
@@ -162,7 +168,6 @@ export default class CssTransitionModifier extends Modifier {
 
     // This is for to force a repaint,
     // which is necessary in order to transition styles when adding a class name.
-    element.scrollTop;
     // add active class after repaint
     this.addClass(activeClassName);
 
@@ -181,10 +186,12 @@ export default class CssTransitionModifier extends Modifier {
   }
 
   addClass(className) {
+    if (!this.el) { return }
     this.el.classList.add(className);
   }
 
   removeClass(className) {
+    if (!this.el) { return }
     this.el.classList.remove(className);
   }
 
