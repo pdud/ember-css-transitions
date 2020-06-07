@@ -14,13 +14,12 @@ Let's look at an example of adding/removing an `is-important` class:
       Press me {{#if this.isImportant}}(Make un-important){{else}}(Make Important){{/if}}
     </button>
 
-    <div {{css-transition name=(if this.isImportant "is-important")}}>
+    <div {{css-transition state=(if this.isImportant "is-important")}}>
       <h1>A very important text.</h1>
     </div>
 
   {{/demo.example}}
 
-  {{demo.snippet "class-add-removal.js"}}
   {{demo.snippet "class-add-removal.hbs"}}
   {{demo.snippet "class-add-removal.css"}}
 {{/docs-demo}}

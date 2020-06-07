@@ -13,8 +13,8 @@ import { nextTick, sleep, computeTimeout } from 'ember-css-transitions/utils/tra
   ```
 
   @class CssTransitionModifier
-  @argument didTransitionIn
-  @argument didTransitionOut
+  @argument {Function} [didTransitionIn]
+  @argument {Function} [didTransitionOut]
   @public
 */
 export default class CssTransitionModifier extends Modifier {
@@ -22,7 +22,7 @@ export default class CssTransitionModifier extends Modifier {
   clone = null;
   parentElement = null;
   nextElementSibling = null;
-  prevName = undefined;
+  prevState = undefined;
 
   get el() {
     return this.clone || this.element;
@@ -48,25 +48,15 @@ export default class CssTransitionModifier extends Modifier {
     return this.args.named.leaveActiveClass || this.transitionName && `${this.transitionName}-leave-active`;
   }
 
-  addClassNames(className) {
-    return this.args.named.enterClass || `${className}-add`;
-  }
-
-  addActiveClassNames(className) {
-    return this.args.named.enterActiveClass || `${className}-add-active`;
-  }
-
-  removeClassNames(className) {
-    return this.args.named.leaveClass || `${className}-remove`;
-  }
-
-  removeActiveClassNames(className) {
-    return this.args.named.leaveActiveClass || `${className}-remove-active`;
-  }
-
   async didInstall() {
-    this.prevName = this.args.named['name'];
-    this.addClass(dasherize(this.prevName));
+    if (Object.prototype.hasOwnProperty.call(this.args.named, 'state')) {
+      this.prevState = this.args.named['state'];
+      if (this.prevState) {
+        this.addClass(dasherize(this.prevState));
+      }
+
+      return;
+    }
 
     if (this.enterClass) {
       await this.transition({
@@ -106,30 +96,30 @@ export default class CssTransitionModifier extends Modifier {
   }
 
   async didUpdateArguments() {
-    let prevName = this.prevName;
-    let name = this.args.named['name'];
-    this.prevName = name; // update previous name
+    let prevState = this.prevState;
+    let state = this.args.named['state'];
+    this.prevState = state; // update previous state
 
-    if (prevName !== name) {
-      if (name) {
-        let className = dasherize(name);
+    if (prevState !== state) {
+      if (state) {
+        let className = dasherize(state);
         this.addClass(className);
 
         await this.transition({
-          className: this.addClassNames(className),
-          activeClassName: this.addActiveClassNames(className)
+          className: `${className}-add`,
+          activeClassName: `${className}-add-active`
         });
 
         if (this.args.named.didTransitionIn) {
           this.args.named.didTransitionIn(className);
         }
       } else {
-        let className = dasherize(prevName);
+        let className = dasherize(prevState);
 
         this.removeClass(className);
         await this.transition({
-          className: this.removeClassNames(className),
-          activeClassName: this.removeActiveClassNames(className)
+          className: `${className}-remove`,
+          activeClassName: `${className}-remove-active`
         });
 
         if (this.args.named.didTransitionOut) {

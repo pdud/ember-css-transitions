@@ -23,8 +23,8 @@
 /* END-SNIPPET */
 
 /* BEGIN-SNIPPET insert-destroy-verbose.css */
-.duration-1000 {
-  transition-duration: 1000ms;
+.duration-500 {
+  transition-duration: 500ms;
 }
 
 .opacity-0 {

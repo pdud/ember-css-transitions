@@ -12,11 +12,11 @@ Let's look at one example:
       Press me
     </button>
 
-    {{#unless this.show}}
+    {{#if this.show}}
       <div {{css-transition name="example"}}>
         <h1>Hello world</h1>
       </div>
-    {{/unless}}
+    {{/if}}
   {{/demo.example}}
 
   {{demo.snippet "insert-destroy.hbs"}}
@@ -27,7 +27,7 @@ Let's look at one example:
   Notice how the name argument is used for the prefix of the css classes you define.
 </aside>
 
-## **Manually specifying class names**
+## **Custom Transition Classess**
 
 Each individual class can also be specified independently like below. This is perfect for libraries like [Animate.css](https://animate.style/) and [Tailwind CSS](https://tailwindcss.com/).
 
@@ -38,7 +38,7 @@ Each individual class can also be specified independently like below. This is pe
     </button>
 
     {{#if this.show2}}
-      <div {{css-transition enterClass="opacity-0 max-h-0" enterActiveClass="duration-1000 opacity-100 max-h-12" leaveClass="opacity-100 max-h-12" leaveActiveClass="duration-1000 opacity-0 max-h-0"}}>
+      <div {{css-transition enterClass="opacity-0 max-h-0" enterActiveClass="duration-500 opacity-100 max-h-12" leaveClass="opacity-100 max-h-12" leaveActiveClass="duration-500 opacity-0 max-h-0"}}>
         <h1>Hello world</h1>
       </div>
     {{/if}}

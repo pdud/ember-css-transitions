@@ -19,7 +19,7 @@ The kind of CSS you'll be writing is of the following structure:
   opacity: 0;
 }
 
-.example.example-enter-active {
+.example-enter-active {
   /* enter final state and how to transition to it */
   opacity: 1;
   transition: opacity 0.5s ease-in;
@@ -30,12 +30,11 @@ The kind of CSS you'll be writing is of the following structure:
   opacity: 1;
 }
 
-.example-leave.example-leave-active {
+.example-leave-active {
   /* leave final state and how to transition to it */
   opacity: 0;
   transition: opacity 0.5s ease-in;
 }
 ```
-
 
 Check out the other sections of the docs for more info on how to use the addon.
