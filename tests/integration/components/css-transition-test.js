@@ -11,7 +11,7 @@ module('Integration | Component | transition group', function(hooks) {
     name: 'element',
     template: hbs`
       {{#if this.show}}
-        <div id="my-element" {{css-transition "example" didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
+        <div id="my-element" {{css-transition name="example" didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
           <p class="content">Çup?</p>
         </div>
       {{/if}}
@@ -20,7 +20,7 @@ module('Integration | Component | transition group', function(hooks) {
     name: 'classic component',
     template: hbs`
       {{#if this.show}}
-        <MyComponent id="my-element" {{css-transition "example" didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
+        <MyComponent id="my-element" {{css-transition name="example" didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
           <p class="content">Çup?</p>
         </MyComponent>
       {{/if}}
@@ -29,7 +29,7 @@ module('Integration | Component | transition group', function(hooks) {
     name: 'glimmer component',
     template: hbs`
       {{#if this.show}}
-        <GlimmerComponent id="my-element" {{css-transition "example" didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
+        <GlimmerComponent id="my-element" {{css-transition name="example" didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
           <p class="content">Çup?</p>
         </GlimmerComponent>
       {{/if}}
@@ -39,7 +39,7 @@ module('Integration | Component | transition group', function(hooks) {
   testCases.forEach((i) => {
 
     test(`enter and leave transitions work (${i.name})`, async function(assert) {
-      assert.expect(16);
+      assert.expect(17);
 
       this.didTransitionIn = spy();
       this.didTransitionOut = spy();
@@ -62,10 +62,9 @@ module('Integration | Component | transition group', function(hooks) {
       await waitFor('#my-element.example-enter-active');
 
       assert.dom('#my-element').hasClass('example-enter-active', '-enter-active is applied');
-
-      await waitFor('#my-element:not(.example-enter)');
-
       assert.dom('#my-element').doesNotHaveClass('example-enter', '-enter was removed');
+
+      await waitFor('#my-element:not(.example-enter-active)');
 
       assert.ok(this.didTransitionIn.calledOnce, 'didTransitionIn was called once');
       assert.ok(this.didTransitionOut.notCalled, 'didTransitionOut was not called');
@@ -79,6 +78,7 @@ module('Integration | Component | transition group', function(hooks) {
       await waitFor('#my-element_clone.example-leave-active');
 
       assert.dom('#my-element_clone').hasClass('example-leave-active', '-leave-active is applied after `afterRender` and a browser repaint on clone');
+      assert.dom('#my-element_clone').doesNotHaveClass('example-leave', '-leave was removed from the clone');
 
       assert.dom('#my-element').doesNotExist('original element is not present');
 
@@ -88,8 +88,8 @@ module('Integration | Component | transition group', function(hooks) {
 
       assert.dom('#my-element_clone').doesNotExist('clone was removed');
 
-      assert.ok(this.didTransitionIn.calledOnce, 'didTransitionIn was called once');
-      assert.ok(this.didTransitionOut.calledOnce, 'didTransitionOut was called once');
+      assert.ok(this.didTransitionIn.calledOnce, 'didTransitionIn was called once total');
+      assert.ok(this.didTransitionOut.calledOnce, 'didTransitionOut was called once total');
     });
 
   });
@@ -97,21 +97,21 @@ module('Integration | Component | transition group', function(hooks) {
   testCases = [{
     name: 'element',
     template: hbs`
-      <div id="my-element" {{css-transition isImportant=this.isImportant didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
+      <div id="my-element" {{css-transition name=(if this.isImportant "is-important") didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
         <p class="content">Çup?</p>
       </div>
     `
   }, {
     name: 'classic component',
     template: hbs`
-      <MyComponent id="my-element" {{css-transition isImportant=this.isImportant didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
+      <MyComponent id="my-element" {{css-transition name=(if this.isImportant "is-important") didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
         <p class="content">Çup?</p>
       </MyComponent>
     `
   }, {
     name: 'glimmer component',
     template: hbs`
-      <GlimmerComponent id="my-element" {{css-transition isImportant=this.isImportant didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
+      <GlimmerComponent id="my-element" {{css-transition name=(if this.isImportant "is-important") didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
         <p class="content">Çup?</p>
       </GlimmerComponent>
     `
@@ -144,10 +144,10 @@ module('Integration | Component | transition group', function(hooks) {
 
       // transition should be happening now
       assert.dom('#my-element').hasClass('is-important-add-active', '-add-active is applied after `afterRender` and a browser repaint');
-
-      await waitFor('#my-element:not(.is-important-add)');
-
       assert.dom('#my-element').doesNotHaveClass('is-important-add', '-add was removed');
+
+      await waitFor('#my-element:not(.is-important-add-active)');
+
       assert.dom('#my-element').hasClass('is-important', 'class was added');
 
       assert.ok(this.didTransitionIn.calledOnceWith('is-important'), 'didTransitionIn was called once with is-important');
@@ -162,10 +162,10 @@ module('Integration | Component | transition group', function(hooks) {
       assert.dom('#my-element').hasClass('is-important-remove-active', '-remove-active is applied after `afterRender` and a browser repaint on clone');
 
       assert.dom('#my-element').doesNotHaveClass('is-important', 'class was removed');
-
-      await waitFor('#my-element:not(.is-important-remove)');
-
       assert.dom('#my-element').doesNotHaveClass('is-important-remove', '-remove was removed');
+
+      await waitFor('#my-element:not(.is-important-remove-active)');
+
       assert.dom('#my-element').doesNotHaveClass('is-important-remove-active', '-remove-active was removed');
 
       assert.ok(this.didTransitionIn.calledOnceWith('is-important'), 'didTransitionIn was called once with is-important');
@@ -183,7 +183,7 @@ module('Integration | Component | transition group', function(hooks) {
     this.set('isImportant', true);
 
     await render(hbs`
-      <div id="my-element" {{css-transition isImportant=this.isImportant didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
+      <div id="my-element" {{css-transition name=(if this.isImportant "is-important") didTransitionIn=this.didTransitionIn didTransitionOut=this.didTransitionOut}}>
         <p class="content">Çup?</p>
       </div>
     `);
@@ -200,7 +200,7 @@ module('Integration | Component | transition group', function(hooks) {
     this.set('isImportant', false);
 
     await render(hbs`
-      <div id="my-element" class="some test classes" {{css-transition isImportant=this.isImportant}}>
+      <div id="my-element" class="some test classes" {{css-transition name=(if this.isImportant "is-important")}}>
         <p class="content">Çup?</p>
       </div>
     `);

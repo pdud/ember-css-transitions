@@ -45,12 +45,11 @@
 /* END-SNIPPET */
 
 /* BEGIN-SNIPPET class-add-removal.css*/
-.is-important-add, .is-important-remove {
+.is-important-remove {
   transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
 }
 
-.is-important,
-.is-important-add-active {
+.is-important {
   color: red;
   font-size: 1.5em;
   transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;

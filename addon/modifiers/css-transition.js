@@ -22,7 +22,7 @@ export default class CssTransitionModifier extends Modifier {
   clone = null;
   parentElement = null;
   nextElementSibling = null;
-
+  prevName = undefined;
 
   get el() {
     return this.clone || this.element;
@@ -33,19 +33,19 @@ export default class CssTransitionModifier extends Modifier {
   }
 
   get enterClass() {
-    return this.args.named.enterClass || `${this.transitionName}-enter`;
+    return this.args.named.enterClass || this.transitionName && `${this.transitionName}-enter`;
   }
 
   get enterActiveClass() {
-    return this.args.named.enterActiveClass || `${this.transitionName}-enter-active`;
+    return this.args.named.enterActiveClass || this.transitionName && `${this.transitionName}-enter-active`;
   }
 
   get leaveClass() {
-    return this.args.named.leaveClass || `${this.transitionName}-leave`;
+    return this.args.named.leaveClass || this.transitionName && `${this.transitionName}-leave`;
   }
 
   get leaveActiveClass() {
-    return this.args.named.leaveActiveClass || `${this.transitionName}-leave-active`;
+    return this.args.named.leaveActiveClass || this.transitionName && `${this.transitionName}-leave-active`;
   }
 
   addClassNames(className) {
@@ -65,6 +65,8 @@ export default class CssTransitionModifier extends Modifier {
   }
 
   async didInstall() {
+    this.prevName = this.args.named['name'];
+    this.addClass(dasherize(this.prevName));
 
     if (this.enterClass) {
       await this.transition({
@@ -103,17 +105,14 @@ export default class CssTransitionModifier extends Modifier {
     }
   }
 
-  prev = {};
-
   async didUpdateArguments() {
-    let key = "name"
-    let prevValue = this.prev[key];
-    let value = this.args.named[key];
-    this.prev[key] = value; // update previous value
+    let prevName = this.prevName;
+    let name = this.args.named['name'];
+    this.prevName = name; // update previous name
 
-    if (prevValue !== value) {
-      if (value) {
-        let className = dasherize(value);
+    if (prevName !== name) {
+      if (name) {
+        let className = dasherize(name);
         this.addClass(className);
 
         await this.transition({
@@ -125,7 +124,7 @@ export default class CssTransitionModifier extends Modifier {
           this.args.named.didTransitionIn(className);
         }
       } else {
-        let className = dasherize(prevValue);
+        let className = dasherize(prevName);
 
         this.removeClass(className);
         await this.transition({
@@ -140,6 +139,13 @@ export default class CssTransitionModifier extends Modifier {
     }
   }
 
+  /**
+   * Adds a clone to the parentElement so it can be transitioned out
+   *
+   * @private
+   * @method addClone
+   * @return {[HTMLElement]}
+   */
   addClone() {
     let original = this.element;
     let parentElement = original.parentElement || this.parentElement;
@@ -153,6 +159,13 @@ export default class CssTransitionModifier extends Modifier {
     this.clone = clone;
   }
 
+  /**
+   * Removes the clone from the parentElement
+   *
+   * @private
+   * @method removeClone
+   * @return {[HTMLElement]}
+   */
   removeClone() {
     if (this.clone.isConnected && this.clone.parentNode !== null) {
       this.clone.parentNode.removeChild(this.clone);
@@ -164,7 +177,9 @@ export default class CssTransitionModifier extends Modifier {
    *
    * @private
    * @method transition
-   * @param {String} animationType The animation type, e.g. "enter" or "leave".
+   * @param {Object} args
+   * @param {String} args.className the class representing the starting state
+   * @param {String} args.activeClassName the class representing the finished state
    * @return {Promise}
    */
   async transition({ className, activeClassName }) {
@@ -191,12 +206,27 @@ export default class CssTransitionModifier extends Modifier {
     this.removeClass(activeClassName);
   }
 
+  /**
+   * Add classNames to el.
+   *
+   * @private
+   * @method addClass
+   * @param {String} classNames
+   * @return {DOMTokenList}
+   */
   addClass(className) {
     this.el.classList.add(...className.split(' '));
   }
 
+  /**
+   * Remove classNames from el.
+   *
+   * @private
+   * @method removeClass
+   * @param {String} classNames
+   * @return {DOMTokenList}
+   */
   removeClass(className) {
     this.el.classList.remove(...className.split(' '));
   }
-
 }

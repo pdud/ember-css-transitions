@@ -12,11 +12,11 @@ Let's look at one example:
       Press me
     </button>
 
-    {{#if this.show}}
+    {{#unless this.show}}
       <div {{css-transition name="example"}}>
         <h1>Hello world</h1>
       </div>
-    {{/if}}
+    {{/unless}}
   {{/demo.example}}
 
   {{demo.snippet "insert-destroy.hbs"}}
@@ -24,12 +24,12 @@ Let's look at one example:
 {{/docs-demo}}
 
 <aside>
-  Notice how the positional argument is used for the prefix of the css classes you define.
+  Notice how the name argument is used for the prefix of the css classes you define.
 </aside>
 
 ## **Manually specifying class names**
 
-Each individual class can also be specified independently like below.
+Each individual class can also be specified independently like below. This is perfect for libraries like [Animate.css](https://animate.style/) and [Tailwind CSS](https://tailwindcss.com/).
 
 {{#docs-demo as |demo|}}
   {{#demo.example name="insert-destroy-verbose.hbs"}}
@@ -49,4 +49,4 @@ Each individual class can also be specified independently like below.
 {{/docs-demo}}
 
 
-You're free to customize your element like you normally would. The modifier will only apply and remove the classes and nothing else.
+You're free to customize your element like you normally would. The modifier will only apply and remove the transition classes and nothing else.
