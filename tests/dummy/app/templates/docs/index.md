@@ -2,15 +2,16 @@
 
 `ember-css-transitions` provides some utilities that help you define animations purely in CSS.
 
-This can be thought of a port of angular's ng-animate or react-animation for Ember.
+This can be thought of a port of Vue's transitions for Ember.
 
-To install it just run:
+To install it run:
 
 ```bash
 ember install ember-css-transitions
 ```
 
-The kind of CSS you'll be writing is of the following structure:
+
+This addon is perfect for libraries like [Animate.css](https://animate.style/) and [Tailwind CSS](https://tailwindcss.com/). If you write your own css it will be of the following structure:
 
 
 ```css

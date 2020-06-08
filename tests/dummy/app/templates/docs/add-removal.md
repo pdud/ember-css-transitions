@@ -11,7 +11,7 @@ Let's look at an example of adding/removing an `is-important` class:
 {{#docs-demo as |demo|}}
   {{#demo.example name="class-add-removal.hbs"}}
     <button class="docs-btn" {{on "click" (action (mut this.isImportant) (not this.isImportant))}}>
-      Press me {{#if this.isImportant}}(Make un-important){{else}}(Make Important){{/if}}
+      Press me {{#if this.isImportant}}(Make un-important){{else}}(Make important){{/if}}
     </button>
 
     <div {{css-transition state=(if this.isImportant "is-important")}}>
@@ -31,7 +31,7 @@ Let's look at an example of adding/removing an `is-important` class:
 
 ## **Manually specifying class names**
 
-Using an if statement can show state changes?
+Sometimes you don't need this modifier to animate state changes.
 
 {{#docs-demo as |demo|}}
   {{#demo.example name="class-add-removal-verbose.hbs"}}

@@ -22,28 +22,58 @@ export default class CssTransitionModifier extends Modifier {
   clone = null;
   parentElement = null;
   nextElementSibling = null;
-  prevState = undefined;
+  prevState = null;
 
+  /**
+   * @type {(HTMLElement|undefined)}
+   * @private
+   * @readonly
+   */
   get el() {
     return this.clone || this.element;
   }
 
+  /**
+   * @type {(String|undefined)}
+   * @private
+   * @readonly
+   */
   get transitionName() {
     return this.args.positional[0] || this.args.named.name;
   }
 
+  /**
+   * @type {(String|undefined)}
+   * @private
+   * @readonly
+   */
   get enterClass() {
     return this.args.named.enterClass || this.transitionName && `${this.transitionName}-enter`;
   }
 
+  /**
+   * @type {(String|undefined)}
+   * @private
+   * @readonly
+   */
   get enterActiveClass() {
     return this.args.named.enterActiveClass || this.transitionName && `${this.transitionName}-enter-active`;
   }
 
+  /**
+   * @type {(String|undefined)}
+   * @private
+   * @readonly
+   */
   get leaveClass() {
     return this.args.named.leaveClass || this.transitionName && `${this.transitionName}-leave`;
   }
 
+  /**
+   * @type {(String|undefined)}
+   * @private
+   * @readonly
+   */
   get leaveActiveClass() {
     return this.args.named.leaveActiveClass || this.transitionName && `${this.transitionName}-leave-active`;
   }
