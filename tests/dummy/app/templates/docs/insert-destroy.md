@@ -38,7 +38,7 @@ Each individual class can also be specified independently like below. This is pe
     </button>
 
     {{#if this.show2}}
-      <div {{css-transition enterClass="opacity-0 max-h-0" enterActiveClass="duration-500 opacity-100 max-h-12" leaveClass="opacity-100 max-h-12" leaveActiveClass="duration-500 opacity-0 max-h-0"}}>
+      <div {{css-transition enterClass="opacity-0 max-h-0" enterActiveClass="duration-500" enterToClass="opacity-100 max-h-12" leaveClass="opacity-100 max-h-12" leaveActiveClass="duration-500" leaveToClass="opacity-0 max-h-0"}}>
         <h1>Hello world</h1>
       </div>
     {{/if}}

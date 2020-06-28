@@ -65,6 +65,15 @@ export default class CssTransitionModifier extends Modifier {
    * @private
    * @readonly
    */
+  get enterToClass() {
+    return this.args.named.enterToClass || this.transitionName && `${this.transitionName}-enter-to`;
+  }
+
+  /**
+   * @type {(String|undefined)}
+   * @private
+   * @readonly
+   */
   get leaveClass() {
     return this.args.named.leaveClass || this.transitionName && `${this.transitionName}-leave`;
   }
@@ -76,6 +85,15 @@ export default class CssTransitionModifier extends Modifier {
    */
   get leaveActiveClass() {
     return this.args.named.leaveActiveClass || this.transitionName && `${this.transitionName}-leave-active`;
+  }
+
+  /**
+   * @type {(String|undefined)}
+   * @private
+   * @readonly
+   */
+  get leaveToClass() {
+    return this.args.named.leaveToClass || this.transitionName && `${this.transitionName}-leave-to`;
   }
 
   async didInstall() {
@@ -91,7 +109,8 @@ export default class CssTransitionModifier extends Modifier {
     if (this.enterClass) {
       await this.transition({
         className: this.enterClass,
-        activeClassName: this.enterActiveClass
+        activeClassName: this.enterActiveClass,
+        toClassName: this.enterToClass
       });
 
       if (this.args.named.didTransitionIn) {
@@ -112,7 +131,8 @@ export default class CssTransitionModifier extends Modifier {
 
       await this.transition({
         className: this.leaveClass,
-        activeClassName: this.leaveActiveClass
+        activeClassName: this.leaveActiveClass,
+        toClassName: this.leaveToClass
       });
 
       this.removeClone();
@@ -200,13 +220,14 @@ export default class CssTransitionModifier extends Modifier {
    * @param {Object} args
    * @param {String} args.className the class representing the starting state
    * @param {String} args.activeClassName the class representing the finished state
+   * @param {String} args.toClassName the class representing the finished state
    * @return {Promise}
    */
-  async transition({ className, activeClassName }) {
+  async transition({ className, activeClassName, toClassName}) {
     let element = this.el;
 
-    // add first class right away
     this.addClass(className);
+    this.addClass(activeClassName);
 
     await nextTick();
 
@@ -214,15 +235,15 @@ export default class CssTransitionModifier extends Modifier {
     // which is necessary in order to transition styles when adding a class name.
     element.scrollTop;
 
-    // add active class, remove first class after repaint
-    this.addClass(activeClassName);
+    // after repaint
+    this.addClass(toClassName);
     this.removeClass(className);
 
     // wait for ember to apply classes
     // set timeout for animation end
     await sleep(computeTimeout(element) || 0);
 
-    this.removeClass(className);
+    this.removeClass(toClassName);
     this.removeClass(activeClassName);
   }
 
